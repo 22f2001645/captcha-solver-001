@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Captcha Solver</title>
+</head>
+<body>
+<div>
+    <label for="captcha-url">Enter Captcha URL:</label>
+    <input type="text" id="captcha-url">
+    <button onclick="solveCaptcha()">Solve Captcha</button>
+</div>
+<div id="captcha-image"></div>
+<div id="captcha-text"></div>
+
+<script>
+    function solveCaptcha() {
+        const url = document.getElementById('captcha-url').value;
+        if (!url) {
+            alert('Please enter a URL');
+            return;
+        }
+
+        fetch(`captcha-solver.php?url=${url}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('captcha-text').textContent = `Solved Captcha: ${data}`;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+</body>
+</html> 
+
+<!-- captcha-solver.php file content -->
+<?php
+$url = $_GET['url'];
+$image = file_get_contents($url);
+$text = solveCaptcha($image); // Function to solve the captcha image
+echo $text;
+?>
