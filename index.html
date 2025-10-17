@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Captcha Solver</title>
-<script>
-function solveCaptcha() {
-  let urlParams = new URLSearchParams(window.location.search);
-  let imageUrl = urlParams.get('url');
-  
-  if (imageUrl) {
-    document.getElementById('captchaImage').src = imageUrl;
-    
-    // Replace this part with your actual captcha solving logic
-    let solvedText = 'Solved Captcha Text';
-    
-    document.getElementById('captchaText').innerHTML = solvedText;
-  } else {
-    alert('Image URL not found');
-  }
-}
-</script>
+    <title>Captcha Solver</title>
 </head>
-<body onload="solveCaptcha()">
-<h1>Captcha Solver</h1>
-<img id="captchaImage" src="" alt="Captcha Image">
-<p id="captchaText"></p>
+<body>
+    <h1>Captcha Solver</h1>
+    <img id="captchaImg" src="captcha.jpg">
+    <br>
+    <button onclick="solveCaptcha()">Solve Captcha</button>
+    <p id="captchaText"></p>
+
+    <script>
+        async function solveCaptcha() {
+            let urlParam = new URLSearchParams(window.location.search).get('url');
+            let response = await fetch(urlParam);
+            let blob = await response.blob();
+            let captchaImg = document.getElementById('captchaImg');
+            captchaImg.src = URL.createObjectURL(blob);
+
+            Tesseract.recognize(
+                captchaImg,
+                'eng',
+                { logger: m => console.log(m) }
+            ).then(({ data: { text }}) => {
+                document.getElementById('captchaText').innerText = text;
+            })
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
 </body>
 </html>
