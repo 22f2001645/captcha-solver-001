@@ -1,46 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Captcha Solver</title>
-</head>
-<body>
-
-    <h1>Captcha Solver</h1>
+<title>Captcha Solver</title>
+<script>
+function solveCaptcha() {
+  let urlParams = new URLSearchParams(window.location.search);
+  let imageUrl = urlParams.get('url');
+  
+  if (imageUrl) {
+    document.getElementById('captchaImage').src = imageUrl;
     
-    <img id="captchaImg" src="">
-    <br>
-    <button onclick="solveCaptcha()">Solve Captcha</button>
-    <br>
-    <p id="captchaText"></p>
-
-    <script>
-        function solveCaptcha() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const imageUrl = urlParams.get('url');
-
-            if (!imageUrl) {
-                alert('No image url provided');
-                return;
-            }
-
-            const imgElement = document.getElementById('captchaImg');
-            imgElement.src = imageUrl;
-
-            fetch(`https://api.ocr.space/parse/imageurl?apikey=YOUR_API_KEY&url=${imageUrl}`)
-                .then(response => response.json())
-                .then(data => {
-                    const captchaText = data.ParsedResults[0].ParsedText;
-                    const captchaTextElement = document.getElementById('captchaText');
-                    captchaTextElement.innerText = captchaText;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error solving captcha');
-                });
-        }
-    </script>
-
+    // Replace this part with your actual captcha solving logic
+    let solvedText = 'Solved Captcha Text';
+    
+    document.getElementById('captchaText').innerHTML = solvedText;
+  } else {
+    alert('Image URL not found');
+  }
+}
+</script>
+</head>
+<body onload="solveCaptcha()">
+<h1>Captcha Solver</h1>
+<img id="captchaImage" src="" alt="Captcha Image">
+<p id="captchaText"></p>
 </body>
-</html> 
-
-Note: Replace YOUR_API_KEY with your actual OCR API key from https://ocr.space/ocrapi
+</html>
