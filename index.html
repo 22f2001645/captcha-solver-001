@@ -4,24 +4,43 @@
     <title>Captcha Solver</title>
 </head>
 <body>
+
     <h1>Captcha Solver</h1>
     
-    <img id="captchaImg" src="" alt="Captcha Image">
+    <img id="captchaImg" src="">
+    <br>
+    <button onclick="solveCaptcha()">Solve Captcha</button>
+    <br>
     <p id="captchaText"></p>
-    
+
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const imageUrl = urlParams.get('url');
-        
-        document.getElementById('captchaImg').src = imageUrl;
-        
-        // Assume this function solves the captcha image and returns the text
-        function solveCaptcha(imageUrl) {
-            // Here you should implement your logic for solving the captcha image
-            return 'Solved Captcha Text';
+        function solveCaptcha() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const imageUrl = urlParams.get('url');
+
+            if (!imageUrl) {
+                alert('No image url provided');
+                return;
+            }
+
+            const imgElement = document.getElementById('captchaImg');
+            imgElement.src = imageUrl;
+
+            fetch(`https://api.ocr.space/parse/imageurl?apikey=YOUR_API_KEY&url=${imageUrl}`)
+                .then(response => response.json())
+                .then(data => {
+                    const captchaText = data.ParsedResults[0].ParsedText;
+                    const captchaTextElement = document.getElementById('captchaText');
+                    captchaTextElement.innerText = captchaText;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error solving captcha');
+                });
         }
-        
-        document.getElementById('captchaText').textContent = solveCaptcha(imageUrl);
     </script>
+
 </body>
-</html>
+</html> 
+
+Note: Replace YOUR_API_KEY with your actual OCR API key from https://ocr.space/ocrapi
